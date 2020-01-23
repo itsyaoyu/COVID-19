@@ -1,0 +1,42 @@
+---
+title: "Wuhan Coronavirus"
+author: "Yao Yu"
+date: "1/22/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(tidyverse)
+library(rworldmap)
+library(rworldxtra)
+```
+
+```{r}
+data <- read.csv("epirisk.csv")
+world <- getMap(resolution = "high")
+
+# Graphing code from https://ourcodingclub.github.io/2016/12/11/maps_tutorial.html
+# Virus risk analysis data from https://www.mobs-lab.org/2019ncov.html
+
+graph <- ggplot() +
+	geom_polygon(data = world, 
+		aes(x = long, y = lat, group = group),
+		fill = NA, colour = "black") + 
+	geom_point(data = data,  # Add and plot species data
+		aes(x = lng, y = lat, 
+			colour = "red")) +
+	coord_quickmap() +  # Prevents stretching when resizing
+	theme_classic() +  # Remove ugly grey background
+  theme(legend.position="none",
+        axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank(),
+        axis.line.x=element_blank(),
+        axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank(),
+        axis.line.y=element_blank()) +
+  labs(title = "Cities at risk from Wuhan Coronavirus (Air traffic connections)")
+```
+

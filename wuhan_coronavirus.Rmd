@@ -10,6 +10,7 @@ knitr::opts_chunk$set(echo = FALSE)
 library(tidyverse)
 library(rworldmap)
 library(rworldxtra)
+library(raster)
 ```
 
 ```{r Risk analysis}
@@ -69,5 +70,43 @@ graph <- ggplot() +
   labs(title = "Cities reached by Wuhan Coronavirus (As of 1/21/2020)",
        subtitle = "Size represents amount of people infected",
        caption = "Source: JHU CSSE")
+```
+
+```{r China Infected Map 1/24}
+# Data from https://gisanddata.maps.arcgis.com/apps/opsdashboard/index.html#/bda7594740fd40299423467b48e9ecf6
+# Used lat_long script to get the coords using Google Maps API
+
+data <- read.csv("infected_data_01_24_coords.csv")
+data <- data %>%
+  filter(Country.Region == "Mainland China")
+china <- getData("GADM",country="China",level=0)
+
+graph <- ggplot() +
+	geom_polygon(data = china, 
+		aes(x = long, y = lat, group = group),
+		fill = NA, colour = "black") + 
+	geom_point(data = data,  # Add and plot species data
+		aes(x = lon, y = lat, 
+			color = "red", size = Confirmed)) +
+	coord_quickmap() +  # Prevents stretching when resizing
+	theme_classic() +  # Remove ugly grey background
+  theme(axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank(),
+        axis.line.x=element_blank(),
+        axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank(),
+        axis.line.y=element_blank()) +
+  labs(title = "Number of People Infected by Wuhan Coronavirus (As of 1/24/2020)",
+       subtitle = "Excludes people infected outside of China",
+       caption = "Source: JHU CSSE") + 
+  scale_size_continuous(name = "People") +
+  scale_color_manual(
+      name = "Color",
+      values = "red",
+      breaks = "red",
+      labels = "infected"
+    )
 ```
 

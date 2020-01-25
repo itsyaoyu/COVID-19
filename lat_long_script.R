@@ -8,7 +8,7 @@ library(ggmap)
 library(tidyverse)
 
 # Read in the CSV data and store it in a variable 
-origAddress <- read.csv("infected_data.csv", stringsAsFactors = FALSE)
+origAddress <- read.csv("infected_data_01_24.csv", stringsAsFactors = FALSE)
 
 # Initialize the data frame
 geocoded <- data.frame(stringsAsFactors = FALSE)
@@ -28,4 +28,4 @@ for(i in 1:nrow(origAddress))
   origAddress$geoAddress[i] <- as.character(result[3])
 }
 # Write a CSV file containing origAddress to the working directory
-write.csv(origAddress, "infected_data_coords.csv", row.names=FALSE)
+write.csv(origAddress, "infected_data_01_24_coords.csv", row.names=FALSE)

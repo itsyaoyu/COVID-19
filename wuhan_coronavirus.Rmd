@@ -11,6 +11,7 @@ library(tidyverse)
 library(rworldmap)
 library(rworldxtra)
 library(raster)
+library(janitor)
 ```
 
 ```{r Risk analysis}
@@ -108,5 +109,96 @@ graph <- ggplot() +
       breaks = "red",
       labels = "infected"
     )
+```
+
+```{r Feb 6 update}
+# Data from https://gisanddata.maps.arcgis.com/apps/opsdashboard/index.html#/bda7594740fd40299423467b48e9ecf6
+# Used lat_long script to get the coords using Google Maps API
+
+data <- read.csv("infected_data_02_06_coords.csv")
+world <- getMap(resolution = "high")
+
+graph <- ggplot() +
+	geom_polygon(data = world, 
+		aes(x = long, y = lat, group = group),
+		fill = NA, colour = "black") + 
+	geom_point(data = data,  # Add and plot species data
+		aes(x = lon, y = lat, 
+			colour = "red", size = Confirmed, alpha = 0.5)) +
+	coord_quickmap() +  # Prevents stretching when resizing
+	theme_classic() +  # Remove ugly grey background
+  theme(legend.position="none",
+        axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank(),
+        axis.line.x=element_blank(),
+        axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank(),
+        axis.line.y=element_blank()) +
+  labs(title = "Cities reached by Wuhan Coronavirus (As of 1/21/2020)",
+       subtitle = "Size represents amount of people infected",
+       caption = "Source: JHU CSSE")
+```
+
+```{r feb 21 update}
+
+# Downloading the data from GitHub
+
+# download.file(url = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports/02-21-2020.csv", destfile = "raw-data/infected_data_02_21.csv")
+
+# Reading in the data and then cleaning the headers
+
+data <- read_csv("raw-data/infected_data_02_21.csv", col_types = cols(
+  `Province/State` = col_character(),
+  `Country/Region` = col_character(),
+  `Last Update` = col_datetime(format = ""),
+  Confirmed = col_double(),
+  Deaths = col_double(),
+  Recovered = col_double()
+)) %>%
+  clean_names()
+
+# Replacing specific NA locations with general location and filtering out obscure locations
+
+data <- data %>% 
+  mutate(province_state = ifelse(is.na(province_state), country_region, province_state)) %>%
+  filter(country_region != "Others")
+
+# Saving the data
+
+write.csv(data, file = "cleaned-data/infected_data_02_21.csv")
+
+# Reading in the data with coords after running the script
+
+data_coords <- read.csv("infected_data_02_21_coords.csv")
+
+# Reading in world map
+
+world <- getMap(resolution = "high")
+
+# Making graphic
+
+graph <- ggplot() +
+	geom_polygon(data = world, 
+		aes(x = long, y = lat, group = group),
+		fill = NA, colour = "black") + 
+	geom_point(data = data_coords,  # Add and plot species data
+		aes(x = lon, y = lat, 
+			colour = "red", size = confirmed, alpha = 0.5)) +
+	coord_quickmap() +  # Prevents stretching when resizing
+	theme_classic() +  # Remove ugly grey background
+  theme(legend.position="none",
+        axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank(),
+        axis.line.x=element_blank(),
+        axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank(),
+        axis.line.y=element_blank()) +
+  labs(title = "Cities reached by Wuhan Coronavirus (As of 2/21/2020)",
+       subtitle = "Size represents amount of people infected",
+       caption = "Source: JHU CSSE")
 ```
 

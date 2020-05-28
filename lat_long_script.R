@@ -8,24 +8,24 @@ library(ggmap)
 library(tidyverse)
 
 # Read in the CSV data and store it in a variable 
-origAddress <- read.csv("infected_data_01_24.csv", stringsAsFactors = FALSE)
+origAddress <- read.csv("cleaned-data/infected_data_02_21.csv", stringsAsFactors = FALSE)
 
 # Initialize the data frame
 geocoded <- data.frame(stringsAsFactors = FALSE)
 
 #Google api key (hidden for obvious reasons)
 
-register_google(key = "***************************************")
+register_google(key = "AIzaSyDdo3gk7zR7kvWk7zSmS33C9_VlWthI3EI")
 
 # Loop through the addresses to get the latitude and longitude of each address and add it to the
 # origAddress data frame in new columns lat and lon
 for(i in 1:nrow(origAddress))
 {
   # Print("Working...")
-  result <- geocode(origAddress$Province.State[i], output = "latlona", source = "google")
+  result <- geocode(origAddress$province_state[i], output = "latlona", source = "google")
   origAddress$lon[i] <- as.numeric(result[1])
   origAddress$lat[i] <- as.numeric(result[2])
   origAddress$geoAddress[i] <- as.character(result[3])
 }
 # Write a CSV file containing origAddress to the working directory
-write.csv(origAddress, "infected_data_01_24_coords.csv", row.names=FALSE)
+write.csv(origAddress, "infected_data_02_21_coords.csv", row.names=FALSE)

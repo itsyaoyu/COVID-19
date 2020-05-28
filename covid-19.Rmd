@@ -1,5 +1,5 @@
 ---
-title: "Wuhan Coronavirus"
+title: "COVID-19"
 author: "Yao Yu"
 date: "1/22/2020"
 output: html_document
@@ -14,8 +14,11 @@ library(raster)
 library(janitor)
 ```
 
-```{r Risk analysis}
-data <- read.csv("epirisk.csv")
+```{r Risk analysis, message=FALSE}
+
+# message=FALSE for Regions defined for each Polygons
+
+data <- read.csv("raw-data/epirisk.csv")
 world <- getMap(resolution = "high")
 
 # Graphing code from https://ourcodingclub.github.io/2016/12/11/maps_tutorial.html
@@ -41,13 +44,15 @@ graph <- ggplot() +
         axis.line.y=element_blank()) +
   labs(title = "Cities at risk from Wuhan Coronavirus (Air traffic connections)",
        caption = "Source: MOBS Lab")
+
+graph
 ```
 
-```{r Infected map}
+```{r Infected map, message=FALSE}
 # Data from https://gisanddata.maps.arcgis.com/apps/opsdashboard/index.html#/bda7594740fd40299423467b48e9ecf6
 # Used lat_long script to get the coords using Google Maps API
 
-data <- read.csv("infected_data_coords.csv")
+data <- read.csv("cleaned-data/infected_data_coords.csv")
 world <- getMap(resolution = "high")
 
 graph <- ggplot() +
@@ -71,13 +76,15 @@ graph <- ggplot() +
   labs(title = "Cities reached by Wuhan Coronavirus (As of 1/21/2020)",
        subtitle = "Size represents amount of people infected",
        caption = "Source: JHU CSSE")
+
+graph
 ```
 
-```{r China Infected Map 1/24}
+```{r China Infected Map 1/24, message=FALSE}
 # Data from https://gisanddata.maps.arcgis.com/apps/opsdashboard/index.html#/bda7594740fd40299423467b48e9ecf6
 # Used lat_long script to get the coords using Google Maps API
 
-data <- read.csv("infected_data_01_24_coords.csv")
+data <- read.csv("cleaned-data/infected_data_01_24_coords.csv")
 data <- data %>%
   filter(Country.Region == "Mainland China")
 china <- getData("GADM",country="China",level=0)
@@ -109,13 +116,15 @@ graph <- ggplot() +
       breaks = "red",
       labels = "infected"
     )
+
+graph
 ```
 
-```{r Feb 6 update}
+```{r Feb 6 update, message=FALSE}
 # Data from https://gisanddata.maps.arcgis.com/apps/opsdashboard/index.html#/bda7594740fd40299423467b48e9ecf6
 # Used lat_long script to get the coords using Google Maps API
 
-data <- read.csv("infected_data_02_06_coords.csv")
+data <- read.csv("cleaned-data/infected_data_02_06_coords.csv")
 world <- getMap(resolution = "high")
 
 graph <- ggplot() +
@@ -139,9 +148,11 @@ graph <- ggplot() +
   labs(title = "Cities reached by Wuhan Coronavirus (As of 1/21/2020)",
        subtitle = "Size represents amount of people infected",
        caption = "Source: JHU CSSE")
+
+graph
 ```
 
-```{r feb 21 update}
+```{r feb 21 update, message=FALSE}
 
 # Downloading the data from GitHub
 
@@ -167,11 +178,11 @@ data <- data %>%
 
 # Saving the data
 
-write.csv(data, file = "cleaned-data/infected_data_02_21.csv")
+# write.csv(data, file = "cleaned-data/infected_data_02_21.csv")
 
 # Reading in the data with coords after running the script
 
-data_coords <- read.csv("infected_data_02_21_coords.csv")
+data_coords <- read.csv("cleaned-data/infected_data_02_21_coords.csv")
 
 # Reading in world map
 
@@ -200,5 +211,7 @@ graph <- ggplot() +
   labs(title = "Cities reached by Wuhan Coronavirus (As of 2/21/2020)",
        subtitle = "Size represents amount of people infected",
        caption = "Source: JHU CSSE")
+
+graph
 ```
 

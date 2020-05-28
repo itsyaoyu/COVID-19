@@ -15,7 +15,7 @@ geocoded <- data.frame(stringsAsFactors = FALSE)
 
 #Google api key (hidden for obvious reasons)
 
-register_google(key = "AIzaSyDdo3gk7zR7kvWk7zSmS33C9_VlWthI3EI")
+register_google(key = "")
 
 # Loop through the addresses to get the latitude and longitude of each address and add it to the
 # origAddress data frame in new columns lat and lon
